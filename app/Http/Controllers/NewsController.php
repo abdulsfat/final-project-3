@@ -73,7 +73,7 @@ class NewsController extends Controller
         return response()->json(['data' => $berita, 'message' => 'Get Detail Resource'], 200);
     }
 
-    # method update - mengupdate hewan
+    # method update - mengupdate berita
     public function update(Request $request, $id)
     {
 
@@ -97,7 +97,7 @@ class NewsController extends Controller
         return response()->json(['message' => 'Resource is update successfully'], 201);
     }
 
-    # method destroy - menghapus hewan
+    # method destroy - menghapus berita
     public function destroy($id)
     {
         $berita = News::find($id);
@@ -111,41 +111,44 @@ class NewsController extends Controller
         return response()->json(['message' => 'Resource is deleted successfully'], 200);
     }
 
+   // mengambil berita berdasarkan judul
     public function search(Request $request, $title)
     {
         $newsByTitle = News::where('title', 'like', "%$title%")->get();
 
-        return response()->json(['data' => $newsByTitle, 'message' => 'Get News by Title'], 200);
+        if (!$newsByTitle) {
+            return response()->json(['message' => 'Resource not found.'], 404);
+        }
+
+        return response()->json(['data' => $newsByTitle, 'message' => 'Get searched resource'], 200);
     }
 
-    // // mengambil berita berdasarkan category sport
-
-    public function getByCategorySport()
+    // mengambil berita berdasarkan category sport
+    public function sport()
     {
         $sportNews = News::whereHas('category', function ($query) {
             $query->where('name', 'sport');
         })->get();
 
-        return response()->json(['data' => $sportNews, 'message' => 'Get Sport News'], 200);
+        return response()->json(['data' => $sportNews, 'message' => 'Get sport resource'], 200);
     }
 
-
-    // // mengambil berita berdasarkan category finance
-    public function getByCategoryfinance()
+    // mengambil berita berdasarkan category finance
+    public function finance()
     {
         $financeNews = News::whereHas('category', function ($query) {
             $query->where('name', 'finance');
         })->get();
 
-        return response()->json(['data' => $financeNews, 'message' => 'Get finance News'], 200);
+        return response()->json(['data' => $financeNews, 'message' => 'Get finance resource'], 200);
     }
-    // // mengambil berita berdasarkan category Automitive
-    public function getByCategoryAutomitive()
+    // mengambil berita berdasarkan category automotive
+    public function automotive()
     {
-        $AutomitiveNews = News::whereHas('category', function ($query) {
-            $query->where('name', 'Automitive');
+        $automotiveNews = News::whereHas('category', function ($query) {
+            $query->where('name', 'automotive');
         })->get();
 
-        return response()->json(['data' => $AutomitiveNews, 'message' => 'Get Automitive News'], 200);
+        return response()->json(['data' => $automotiveNews, 'message' => 'Get automotive resource'], 200);
     }
 }
