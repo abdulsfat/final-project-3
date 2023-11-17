@@ -27,7 +27,7 @@ class NewsController extends Controller
     public function store(Request $request)
     {
 
-    // Validasi data input
+        // Validasi data input
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'author' => 'required|string',
@@ -76,10 +76,10 @@ class NewsController extends Controller
     # method update - mengupdate hewan
     public function update(Request $request, $id)
     {
-       
+
         $category = Category::firstOrCreate(['name' => $request->input('category')]);
         $berita = News::find($id);
-        
+
         if (!$berita) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
@@ -93,32 +93,33 @@ class NewsController extends Controller
 
         $berita->category()->associate($category);
         $berita->save();
-         // Kembalikan respons sukses
-         return response()->json(['message' => 'Resource is update successfully'], 201);
+        // Kembalikan respons sukses
+        return response()->json(['message' => 'Resource is update successfully'], 201);
     }
 
     # method destroy - menghapus hewan
     public function destroy($id)
-{
-    $berita = News::find($id);
+    {
+        $berita = News::find($id);
 
-    if (!$berita) {
-        return response()->json(['message' => 'Resource not found.'], 404);
+        if (!$berita) {
+            return response()->json(['message' => 'Resource not found.'], 404);
+        }
+
+        $berita->delete();
+
+        return response()->json(['message' => 'Resource is deleted successfully'], 200);
     }
-
-    $berita->delete();
-
-    return response()->json(['message' => 'Resource is deleted successfully'], 200);
-}
 
     public function search(Request $request, $title)
     {
         $newsByTitle = News::where('title', 'like', "%$title%")->get();
 
-        return response()->json(['data' => $newsByTitle, 'message' => 'Get News by Title'], 200)
+        return response()->json(['data' => $newsByTitle, 'message' => 'Get News by Title'], 200);
     }
 
     // // mengambil berita berdasarkan category sport
+
     public function getByCategorySport()
     {
         $sportNews = News::whereHas('category', function ($query) {
@@ -128,28 +129,23 @@ class NewsController extends Controller
         return response()->json(['data' => $sportNews, 'message' => 'Get Sport News'], 200);
     }
 
- 
+
     // // mengambil berita berdasarkan category finance
+    public function getByCategoryfinance()
     {
-        $sportNews = News::whereHas('category', function ($query) {
+        $financeNews = News::whereHas('category', function ($query) {
             $query->where('name', 'finance');
         })->get();
 
         return response()->json(['data' => $financeNews, 'message' => 'Get finance News'], 200);
     }
+    // // mengambil berita berdasarkan category Automitive
+    public function getByCategoryAutomitive()
+    {
+        $AutomitiveNews = News::whereHas('category', function ($query) {
+            $query->where('name', 'Automitive');
+        })->get();
 
-
-    // // mengambil berita berdasarkan category automotive
-    // public function automotive(Request $request, $category)
-    // {
-    //     $automotiveNews = [];
-
-    //     foreach ($this->news as $berita) {
-    //         if (isset($berita['category']) && strtolower($berita['category']) == 'automotive') {
-    //             $automotiveNews[] = $berita;
-    //         }
-    //     }
-
-    //     return response()->json(['message' => "Berita dengan Category $category berhasil ditemukan."], 200);
-    // }
-}}
+        return response()->json(['data' => $AutomitiveNews, 'message' => 'Get Automitive News'], 200);
+    }
+}
